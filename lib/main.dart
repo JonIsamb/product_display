@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_display/class/product.dart';
+import 'package:project_display/class/padel_raquet.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,15 +46,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  bool fullDisplay = true;
+  bool displayFavoritesOnly = false;
 
-  void _incrementCounter() {
+  void toggleDisplay() {
     setState(() {
-      _counter++;
+      fullDisplay = !fullDisplay;
     });
   }
 
-  final items = List<ListItem>.from([
+  void displayFavoritesToggle() {
+    setState(() {
+      displayFavoritesOnly = !displayFavoritesOnly;
+    });
+  }
+
+  final items = List<PadelRaquet>.from([
     PadelRaquet('Bullpadel Vertex 04 Comfort 24', 'Forme diamant, confort/polyvalente', 109.95, '', false),
     PadelRaquet('Nox AT10 Genius 18K 2025', 'Forme diamant, puissance, signature Agustín Tapia', 179.90, '', false),
     PadelRaquet('Bullpadel Vertex 05 GEO 26', 'Forme diamant, puissance/contrôle', 169.85, '', false),
@@ -70,6 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    final displayedItems = displayFavoritesOnly
+        ? items.where((item) => item.isFavorite).toList()
+        : items;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -77,48 +88,52 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
               height: 80,
               child: Column(
                 children: [
                   Text('Les produits'),
-                  Text('${items.length} produits à découvrir')
+                  Text('${displayedItems.length} produits à découvrir')
                 ],
               ),
             ),
+            Row(
+              children: [
+                TextButton(onPressed: toggleDisplay, child: Text(fullDisplay ? 'Affichage compact' : 'Affichage détaillé')),
+                TextButton(onPressed: displayFavoritesToggle, child: Text(displayFavoritesOnly ? 'Favoris uniquement' : 'Tous les produits'))
+              ],
+
+            ),
             Expanded(
               child: ListView.builder(
-                itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
+                itemCount: displayedItems.length,
+                itemBuilder: (context, index) {
+                  final item = displayedItems[index];
 
-                    return Container(
-                      child: Column(
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              item.buildName(context),
-                              item.buildPrice(context)
-                            ],
-                          ),
-                          item.buildDescription(context),
-                          item.buildFavorite(context)
+                          item.buildName(context),
+                          item.buildPrice(context)
                         ],
-                      )
-                    );
-                  }
+                      ),
+                      if (fullDisplay) item.buildDescription(context),
+                      item.buildFavorite(context, () {
+                        setState(() {
+                          item.setIsFavorite(!item.isFavorite);
+                        });
+                      }),
+                    ],
+                  );
+                },
               ),
-            )
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
