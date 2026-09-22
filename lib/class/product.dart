@@ -21,48 +21,41 @@ abstract class ListItem {
 
 }
 
-/// A ListItem that contains data to display a heading.
-class HeadingItem implements ListItem {
-  final String heading;
-
-  HeadingItem(this.heading);
-
-  @override
-  Widget buildName(BuildContext context) {
-    return Text(heading, style: Theme.of(context).textTheme.headlineSmall);
-  }
-
-  @override
-  Widget buildDescription(BuildContext context) => const SizedBox.shrink();
-  @override
-  Widget buildPrice(BuildContext context) => const SizedBox.shrink();
-  @override
-  Widget buildImage(BuildContext context) => const SizedBox.shrink();
-  @override
-  Widget buildFavorite(BuildContext context) => const SizedBox.shrink();
-}
-
 /// A ListItem that contains data to display a message.
-class MessageItem implements ListItem {
-  final String sender;
-  final String body;
-  final String? price;
+class PadelRaquet implements ListItem {
+  final String name;
+  final String description;
+  final double? price;
   final String? image;
   final bool isFavorite;
 
-  MessageItem(this.sender, this.body, {this.price, this.image, this.isFavorite = false});
+  PadelRaquet(this.name, this.description, this.price, this.image, this.isFavorite);
   @override
-  Widget buildName(BuildContext context) => Text(sender);
+  Widget buildName(BuildContext context) => Text(name);
 
   @override
-  Widget buildDescription(BuildContext context) => Text(body);
+  Widget buildDescription(BuildContext context) => Text(description);
 
   @override
   Widget buildFavorite(BuildContext context) {
     if (isFavorite) {
-      return const Icon(Icons.favorite, color: Colors.red);
+      return Container(
+        child: Row(
+          children: [
+            Icon(Icons.favorite, color: Colors.red),
+            Text('Retirer des favoris')
+          ]
+        ),
+      );
     } else {
-      return const Icon(Icons.favorite_border);
+      return Container(
+        child: Row(
+            children: [
+              Icon(Icons.favorite_border),
+              Text('Ajouter aux favoris')
+            ]
+        ),
+      );
     }
   }
 
@@ -78,7 +71,7 @@ class MessageItem implements ListItem {
   @override
   Widget buildPrice(BuildContext context) {
     if (price != null) {
-      return Text(price!);
+      return Text(price.toString());
     } else {
       return const SizedBox.shrink();
     }

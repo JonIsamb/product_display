@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_display/class/product.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,22 +31,13 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Catalogue de raquettes de padel'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -58,14 +50,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }
+
+  final items = List<ListItem>.from([
+    PadelRaquet('Bullpadel Vertex 04 Comfort 24', 'Forme diamant, confort/polyvalente', 109.95, '', false),
+    PadelRaquet('Nox AT10 Genius 18K 2025', 'Forme diamant, puissance, signature Agustín Tapia', 179.90, '', false),
+    PadelRaquet('Bullpadel Vertex 05 GEO 26', 'Forme diamant, puissance/contrôle', 169.85, '', false),
+    PadelRaquet('Babolat Technical Viper 3.0', 'Forme goutte, polyvalence haut de gamme', 249.99, '', false),
+    PadelRaquet('Bullpadel XPLO 26 Martín Di Nenno', 'Forme diamant, très haut de gamme', 284.99, '', false),
+  ]);
 
   @override
   Widget build(BuildContext context) {
@@ -77,38 +72,46 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
+        backgroundColor: Colors.white,
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: .center,
           children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            SizedBox(
+              height: 80,
+              child: Column(
+                children: [
+                  Text('Les produits'),
+                  Text('${items.length} produits à découvrir')
+                ],
+              ),
             ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+
+                    return Container(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              item.buildName(context),
+                              item.buildPrice(context)
+                            ],
+                          ),
+                          item.buildDescription(context),
+                          item.buildFavorite(context)
+                        ],
+                      )
+                    );
+                  }
+              ),
+            )
           ],
         ),
       ),
