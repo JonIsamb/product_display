@@ -18,14 +18,12 @@ class PadelRaquet {
       return Row(
         children: [
           IconButton(onPressed: onToggle, icon: Icon(Icons.favorite, color: Colors.red)),
-          Text('Retirer des favoris')
         ],
       );
     } else {
       return Row(
         children: [
           IconButton(onPressed: onToggle, icon: Icon(Icons.favorite_border)),
-          Text('Ajouter aux favoris')
         ],
       );
     }
